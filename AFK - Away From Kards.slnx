@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AFK - Away From Kards - Master/AFK - Away From Kards - Master.csproj">
+    <BuildDependency Project="AFK - Away From Kards - Slave/AFK - Away From Kards - Slave.csproj" />
+  </Project>
+  <Project Path="AFK - Away From Kards - Slave/AFK - Away From Kards - Slave.csproj" />
+</Solution>
