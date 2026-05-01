@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Steamworks;
+﻿using Steamworks;
 
 namespace AFK_Away_From_Kards_Slave
 {

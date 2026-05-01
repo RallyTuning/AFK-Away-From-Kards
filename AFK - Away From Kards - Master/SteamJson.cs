@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AFK_Away_From_Kards_Slave
+namespace AFK_Away_From_Kards_Master
 {
     public class SteamJson
     {

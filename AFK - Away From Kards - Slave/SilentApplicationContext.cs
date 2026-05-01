@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AFK_Away_From_Kards_Slave
+﻿namespace AFK_Away_From_Kards_Slave
 {
     public class SilentApplicationContext : ApplicationContext
     {
