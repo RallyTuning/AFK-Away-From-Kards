@@ -4,6 +4,11 @@ namespace AFK_Away_From_Kards_Master
 {
     internal class Functions
     {
+
+
+
+
+
         // reuse a single HttpClient instance for all calls
         static readonly HttpClient http = InitializeClient();
         static HttpClient InitializeClient()
@@ -85,10 +90,49 @@ namespace AFK_Away_From_Kards_Master
             }
             catch
             {
-                return new Bitmap(1, 1);
+              return await GenerateTextImage("Error header image\nFailed to download");
             }
         }
 
+
+        /// <summary>
+        /// Generates an image containing the specified text message, formatted with a predefined style.
+        /// </summary>
+        /// <remarks>
+        /// The generated image uses a fixed size and style, with the message centered in bold Courier New font. This method is typically used to create a visual representation of error or status messages.
+        /// </remarks>
+        /// <param name="Message">The text message to display in the generated image. Cannot be null.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an image displaying the specified message.</returns>
+        internal static async Task<Image> GenerateTextImage(string Message)
+        {
+            try
+            {
+                // Generate a simple error image if the download fails (e.g., invalid AppID or network issues)
+                Bitmap bmp = new(460, 215);
+                using Graphics g = Graphics.FromImage(bmp);
+                g.Clear(Color.Black);
+                StringFormat format = new()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                g.DrawString(Message, new Font("Courier New", 20, FontStyle.Bold), Brushes.Fuchsia, new RectangleF(0, 0, bmp.Width, bmp.Height), format);
+                return bmp;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        // Classe per deserializzare i dati dello scraping
+        public class GameBadgeInfo
+        {
+            public string AppId { get; set; } = "";
+            public string Title { get; set; } = "";
+            public int Drops { get; set; }
+        }
 
 
 

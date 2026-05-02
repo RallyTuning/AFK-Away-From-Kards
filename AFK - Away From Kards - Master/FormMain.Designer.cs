@@ -38,7 +38,6 @@
             LsvGames = new ListView();
             Col_Name = new ColumnHeader();
             Col_Cards = new ColumnHeader();
-            Col_ID = new ColumnHeader();
             TS_ToolBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -96,7 +95,7 @@
             // 
             // LsvGames
             // 
-            LsvGames.Columns.AddRange(new ColumnHeader[] { Col_Name, Col_Cards, Col_ID });
+            LsvGames.Columns.AddRange(new ColumnHeader[] { Col_Name, Col_Cards });
             LsvGames.Dock = DockStyle.Fill;
             LsvGames.FullRowSelect = true;
             LsvGames.HeaderStyle = ColumnHeaderStyle.Nonclickable;
@@ -105,7 +104,7 @@
             LsvGames.ShowGroups = false;
             LsvGames.Size = new Size(556, 417);
             LsvGames.TabIndex = 2;
-            LsvGames.TileSize = new Size(300, 90);
+            LsvGames.TileSize = new Size(400, 100);
             LsvGames.UseCompatibleStateImageBehavior = false;
             LsvGames.View = View.Tile;
             // 
@@ -116,10 +115,6 @@
             // Col_Cards
             // 
             Col_Cards.Text = "Cards";
-            // 
-            // Col_ID
-            // 
-            Col_ID.Text = "ID";
             // 
             // FormMain
             // 
@@ -152,6 +147,5 @@
         private ToolStripSeparator toolStripSeparator1;
         private ColumnHeader Col_Name;
         private ColumnHeader Col_Cards;
-        private ColumnHeader Col_ID;
     }
 }

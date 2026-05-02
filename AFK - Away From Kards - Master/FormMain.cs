@@ -18,8 +18,10 @@ namespace AFK_Away_From_Kards_Master
         private CancellationTokenSource? CtsBackground = null;
         private CancellationTokenSource? CtsScraping = null;
 
+        internal event Action<List<GameBadgeInfo>>? OnGamesScraped;
+
         List<GameBadgeInfo> AllGamesWithCards = [];
-        ImageList ImgListGames = new()
+        private ImageList ImgListGames = new()
         {
             ImageSize = new Size(171, 80)
         };
@@ -83,7 +85,7 @@ namespace AFK_Away_From_Kards_Master
             }
         }
 
-        private async Task<bool> WaitForPageReady(int timeoutSeconds = 15)
+        private async Task<bool> WaitForBadgePageReady(int timeoutSeconds = 15)
         {
             try
             {
@@ -99,8 +101,7 @@ namespace AFK_Away_From_Kards_Master
                     {
                         // 2. Controllo specifico per Steam: cerchiamo almeno una riga delle medaglie
                         // Usiamo querySelector per vedere se esiste la classe 'badge_row'
-                        string ElementCheck = await Invoke(() => WV2Hidden.CoreWebView2.ExecuteScriptAsync(
-                            "document.querySelector('.badge_row') !== null"));
+                        string ElementCheck = await Invoke(() => WV2Hidden.CoreWebView2.ExecuteScriptAsync("document.querySelector('.badge_row') !== null"));
 
                         if (ElementCheck.Equals("true", StringComparison.CurrentCultureIgnoreCase))
                             return true; // La pagina è pronta E ci sono i dati
@@ -118,7 +119,7 @@ namespace AFK_Away_From_Kards_Master
         }
 
 
-        
+
 
         private async void OnNavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
@@ -249,13 +250,7 @@ namespace AFK_Away_From_Kards_Master
 
 
 
-        // Classe per deserializzare i dati dello scraping
-        public class GameBadgeInfo
-        {
-            public string AppId { get; set; } = "";
-            public string Title { get; set; } = "";
-            public int Drops { get; set; }
-        }
+
 
 
 
@@ -307,7 +302,7 @@ namespace AFK_Away_From_Kards_Master
 
 
 
-        public event Action<List<GameBadgeInfo>>? OnGamesScraped;
+
 
         private async Task StartFullScraping()
         {
@@ -316,10 +311,10 @@ namespace AFK_Away_From_Kards_Master
 #warning Cts da implementare
             while (CtsScraping == null)
             {
-                while (!await WaitForPageReady()) { /* aspetta che la pagina sia pronta prima di iniziare */ }
+                while (!await WaitForBadgePageReady()) { /* aspetta che la pagina sia pronta prima di iniziare */ }
 
                 // Creiamo una lista TEMPORANEA per questo ciclo di scansione
-                List<GameBadgeInfo> currentScanResults = new();
+                List<GameBadgeInfo> currentScanResults = [];
 
                 // 1. Esecuzione script
                 string pagesJson = await Invoke(() => WV2Hidden.CoreWebView2.ExecuteScriptAsync(ScriptGetPages()));
@@ -340,7 +335,7 @@ namespace AFK_Away_From_Kards_Master
                     if (Invoke(() => WV2Hidden.Source.ToString()) != url)
                     {
                         Invoke(() => WV2Hidden.CoreWebView2.Navigate(url));
-                        if (!await WaitForPageReady()) continue;
+                        if (!await WaitForBadgePageReady()) continue;
                     }
 
                     // Estrai i giochi filtrati da questa pagina
@@ -387,7 +382,7 @@ namespace AFK_Away_From_Kards_Master
                 }
 
                 // --- 2. AGGIORNAMENTO E AGGIUNTA ---
-                foreach (var game in newData)
+                foreach (GameBadgeInfo game in newData)
                 {
                     // Cerchiamo l'item usando l'AppId come chiave (Name)
                     var existingItem = LsvGames.Items[game.AppId];
@@ -404,9 +399,11 @@ namespace AFK_Away_From_Kards_Master
                     else
                     {
                         // AGGIUNGI: Il gioco è nuovo
-                        ListViewItem newItem = new ListViewItem(game.Title);
-                        newItem.Name = game.AppId; // FONDAMENTALE: l'ID per i futuri controlli
-                        newItem.SubItems.Add($"{game.Drops} drops remaining");
+                        ListViewItem newItem = new(game.Title)
+                        {
+                            Name = game.AppId // FONDAMENTALE: l'ID per i futuri controlli
+                        };
+                        newItem.SubItems.Add($"{game.Drops} cards remaining");
                         newItem.SubItems.Add(game.AppId); // Colonna nascosta per sicurezza
                         newItem.ImageKey = "loading"; // Placeholder
 
@@ -435,7 +432,7 @@ namespace AFK_Away_From_Kards_Master
 
                 // 2. Ridimensionamento proporzionato (171x80 come calcolato)
                 // Creiamo una bitmap della dimensione esatta per la nostra ImageList
-                Bitmap resizedImg = new Bitmap(171, 80);
+                Bitmap resizedImg = new(171, 80);
                 using (Graphics g = Graphics.FromImage(resizedImg))
                 {
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
@@ -448,6 +445,7 @@ namespace AFK_Away_From_Kards_Master
                 // 3. Aggiornamento UI (ImageList e Item)
                 this.Invoke(() =>
                 {
+                    //pictureBox1.Image = resizedImg; // Per debug, mostra l'immagine scaricata
                     // Se per caso l'immagine è già stata aggiunta da un altro thread, la sovrascriviamo
                     if (ImgListGames.Images.ContainsKey(appId))
                         ImgListGames.Images.RemoveByKey(appId);
@@ -458,9 +456,21 @@ namespace AFK_Away_From_Kards_Master
                     item.ImageKey = appId;
                 });
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine($"Errore immagine {appId}: {ex.Message}");
+                await GenerateTextImage("Error imagelist\nSetting failed").ContinueWith(t =>
+                {
+                    if (t.IsCompletedSuccessfully)
+                    {
+                        Image errorImg = t.Result;
+                        this.Invoke(() =>
+                        {
+                            if (!ImgListGames.Images.ContainsKey(appId))
+                                ImgListGames.Images.Add(appId, errorImg);
+                            item.ImageKey = appId;
+                        });
+                    }
+                });
             }
         }
 
@@ -513,6 +523,8 @@ namespace AFK_Away_From_Kards_Master
                         this.Invoke(() => SyncListView(Results));
                     }
                 };
+
+                LsvGames.LargeImageList = ImgListGames;
             }
             catch (Exception ex)
             {
