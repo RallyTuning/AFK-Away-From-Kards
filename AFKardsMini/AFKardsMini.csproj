@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>AFKardsMini</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Resources\AFKards icon slave.ico</ApplicationIcon>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Version>0.1.0.0</Version>
+    <Authors>Gianluigi Capozzoli</Authors>
+    <Company>Gianluigi Capozzoli</Company>
+    <Copyright>Gianluigi Capozzoli</Copyright>
+    <PackageProjectUrl>https://github.com/RallyTuning/AFKards</PackageProjectUrl>
+    <Title>AFKardsMini</Title>
+    <RepositoryUrl>https://github.com/RallyTuning/AFKards</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Risorse\**" />
+    <EmbeddedResource Remove="Risorse\**" />
+    <None Remove="Risorse\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\AFKards icon slave.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Deck">
+      <HintPath>..\Deck\bin\Debug\net10.0\Deck.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.Steamworks.Win64">
+      <HintPath>..\Dipendenze\Facepunch.Steamworks.Win64.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

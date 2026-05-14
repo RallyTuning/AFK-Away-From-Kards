@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AFKards (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AFKards (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

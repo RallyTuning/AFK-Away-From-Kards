@@ -1,0 +1,17 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AFKards/AFKards.csproj">
+    <BuildDependency Project="AFKardsMini/AFKardsMini.csproj" />
+    <BuildDependency Project="Deck/Deck.csproj" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+  <Project Path="AFKardsMini/AFKardsMini.csproj" />
+  <Project Path="Deck/Deck.csproj" Id="4c874597-c2ba-418b-837c-d5765a3e7b2d" />
+</Solution>
