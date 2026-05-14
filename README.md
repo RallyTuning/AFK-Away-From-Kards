@@ -1,1 +1,1 @@
-# AFK - Away From Kards
+# AFKards
