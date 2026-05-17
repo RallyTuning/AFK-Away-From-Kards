@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="AFKards.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AFKards"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="AFKards">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid>
+        <!-- Il menu laterale moderno di Windows -->
+        <NavigationView x:Name="MainNav"
+                        IsSettingsVisible="True"
+                        PaneDisplayMode="Left"
+                        ItemInvoked="MainNav_ItemInvoked">
+
+            <!-- Voci del Menu Principale -->
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Farm" Icon="Home" Tag="Farm" x:Name="NavFarm"/>
+                <NavigationViewItem Content="About" Icon="Contact" Tag="About" x:Name="NavAbout"/>
+            </NavigationView.MenuItems>
+
+            <!-- La cornice centrale che caricherà le varie pagine dinamiche -->
+            <Frame x:Name="ContentFrame"/>
+
+        </NavigationView>
+    </Grid>
+</Window>
